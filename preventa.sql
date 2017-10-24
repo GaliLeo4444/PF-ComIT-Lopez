@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 
 --
 -- Base de datos: `preventa`
---
+CREATE DATABASE preventa;
 
 -- --------------------------------------------------------
 
@@ -28,7 +28,6 @@ SET time_zone = "+00:00";
 -- Estructura de tabla para la tabla `lista_p_p`
 --
 
-DROP TABLE IF EXISTS `lista_p_p`;
 CREATE TABLE IF NOT EXISTS `lista_p_p` (
   `id_pedido` int(10) UNSIGNED NOT NULL,
   `id_producto` bigint(20) UNSIGNED NOT NULL,
@@ -43,7 +42,6 @@ CREATE TABLE IF NOT EXISTS `lista_p_p` (
 -- Estructura de tabla para la tabla `mayorista`
 --
 
-DROP TABLE IF EXISTS `mayorista`;
 CREATE TABLE IF NOT EXISTS `mayorista` (
   `CUIT` int(11) UNSIGNED NOT NULL,
   `nombre` varchar(48) COLLATE utf8_unicode_ci NOT NULL,
@@ -60,7 +58,6 @@ CREATE TABLE IF NOT EXISTS `mayorista` (
 -- Estructura de tabla para la tabla `minorista`
 --
 
-DROP TABLE IF EXISTS `minorista`;
 CREATE TABLE IF NOT EXISTS `minorista` (
   `CUIT_CUIL` int(11) UNSIGNED NOT NULL,
   `nombre` varchar(48) COLLATE utf8_unicode_ci NOT NULL,
@@ -76,7 +73,6 @@ CREATE TABLE IF NOT EXISTS `minorista` (
 -- Estructura de tabla para la tabla `pedido`
 --
 
-DROP TABLE IF EXISTS `pedido`;
 CREATE TABLE IF NOT EXISTS `pedido` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_mayor` int(11) UNSIGNED NOT NULL,
@@ -95,7 +91,6 @@ CREATE TABLE IF NOT EXISTS `pedido` (
 -- Estructura de tabla para la tabla `producto`
 --
 
-DROP TABLE IF EXISTS `producto`;
 CREATE TABLE IF NOT EXISTS `producto` (
   `num` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_mayor` int(11) UNSIGNED NOT NULL,
@@ -114,7 +109,6 @@ CREATE TABLE IF NOT EXISTS `producto` (
 -- Estructura de tabla para la tabla `usuario`
 --
 
-DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE IF NOT EXISTS `usuario` (
   `id_mayor` int(11) UNSIGNED NOT NULL,
   `id_minor` int(11) UNSIGNED NOT NULL,
@@ -152,10 +146,7 @@ ALTER TABLE `producto`
 --
 ALTER TABLE `usuario`
   ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`),
-  ADD CONSTRAINT `usuario_ibfk_2` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`),
-  ADD CONSTRAINT `usuario_ibfk_3` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`),
-  ADD CONSTRAINT `usuario_ibfk_4` FOREIGN KEY (`id_minor`) REFERENCES `minorista` (`CUIT_CUIL`),
-  ADD CONSTRAINT `usuario_ibfk_5` FOREIGN KEY (`id_minor`) REFERENCES `minorista` (`CUIT_CUIL`);
+  ADD CONSTRAINT `usuario_ibfk_2` FOREIGN KEY (`id_minor`) REFERENCES `minorista` (`CUIT_CUIL`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
