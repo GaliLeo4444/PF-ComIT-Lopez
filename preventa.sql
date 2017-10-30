@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 24-10-2017 a las 19:46:50
+-- Tiempo de generación: 30-10-2017 a las 02:22:44
 -- Versión del servidor: 5.7.19
 -- Versión de PHP: 5.6.31
 
@@ -20,8 +20,9 @@ SET time_zone = "+00:00";
 
 --
 -- Base de datos: `preventa`
-CREATE DATABASE preventa;
-USE preventa;
+--
+CREATE DATABASE IF NOT EXISTS `preventa` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `preventa`;
 
 -- --------------------------------------------------------
 
@@ -29,12 +30,11 @@ USE preventa;
 -- Estructura de tabla para la tabla `lista_p_p`
 --
 
-CREATE TABLE IF NOT EXISTS `lista_p_p` (
+DROP TABLE IF EXISTS `lista_p_p`;
+CREATE TABLE `lista_p_p` (
   `id_pedido` int(10) UNSIGNED NOT NULL,
   `id_producto` bigint(20) UNSIGNED NOT NULL,
-  `cantidad` int(10) UNSIGNED NOT NULL,
-  KEY `id_producto` (`id_producto`),
-  KEY `id_pedido` (`id_pedido`)
+  `cant_productos` smallint(5) UNSIGNED NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -43,14 +43,14 @@ CREATE TABLE IF NOT EXISTS `lista_p_p` (
 -- Estructura de tabla para la tabla `mayorista`
 --
 
-CREATE TABLE IF NOT EXISTS `mayorista` (
-  `CUIT` int(11) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `mayorista`;
+CREATE TABLE `mayorista` (
+  `CUIT` bigint(12) UNSIGNED NOT NULL,
   `nombre` varchar(48) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(48) COLLATE utf8_unicode_ci NOT NULL,
   `pass` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   `direccion` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
-  `descripcion` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`CUIT`)
+  `descripcion` text COLLATE utf8_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -59,13 +59,13 @@ CREATE TABLE IF NOT EXISTS `mayorista` (
 -- Estructura de tabla para la tabla `minorista`
 --
 
-CREATE TABLE IF NOT EXISTS `minorista` (
-  `CUIT_CUIL` int(11) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `minorista`;
+CREATE TABLE `minorista` (
+  `CUIT_CUIL` bigint(12) UNSIGNED NOT NULL,
   `nombre` varchar(48) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(48) COLLATE utf8_unicode_ci NOT NULL,
   `pass` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
-  `direccion` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`CUIT_CUIL`)
+  `direccion` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -74,16 +74,15 @@ CREATE TABLE IF NOT EXISTS `minorista` (
 -- Estructura de tabla para la tabla `pedido`
 --
 
-CREATE TABLE IF NOT EXISTS `pedido` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_mayor` int(11) UNSIGNED NOT NULL,
-  `id_minor` int(11) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `pedido`;
+CREATE TABLE `pedido` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `id_mayor` bigint(12) UNSIGNED NOT NULL,
+  `id_minor` bigint(12) UNSIGNED NOT NULL,
   `cantidad` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `comentario` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `id_mayor` (`id_mayor`),
-  KEY `id_minor` (`id_minor`)
+  `estado` enum('presentado','visto','aceptado','rechazado') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'presentado',
+  `comentario` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -92,16 +91,15 @@ CREATE TABLE IF NOT EXISTS `pedido` (
 -- Estructura de tabla para la tabla `producto`
 --
 
-CREATE TABLE IF NOT EXISTS `producto` (
-  `num` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_mayor` int(11) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `producto`;
+CREATE TABLE `producto` (
+  `num` bigint(20) UNSIGNED NOT NULL,
+  `id_mayor` bigint(12) UNSIGNED NOT NULL,
   `codigo` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
   `precio_unit` decimal(6,2) UNSIGNED NOT NULL,
   `min_unit` smallint(6) UNSIGNED NOT NULL DEFAULT '1',
   `descipcion` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `imagen` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`num`),
-  KEY `fk_mayor` (`id_mayor`)
+  `imagen` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -110,12 +108,72 @@ CREATE TABLE IF NOT EXISTS `producto` (
 -- Estructura de tabla para la tabla `usuario`
 --
 
-CREATE TABLE IF NOT EXISTS `usuario` (
-  `id_mayor` int(11) UNSIGNED NOT NULL,
-  `id_minor` int(11) UNSIGNED NOT NULL,
-  KEY `id_mayor` (`id_mayor`),
-  KEY `id_minor` (`id_minor`)
+DROP TABLE IF EXISTS `usuario`;
+CREATE TABLE `usuario` (
+  `id_mayor` bigint(12) UNSIGNED NOT NULL,
+  `id_minor` bigint(12) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `lista_p_p`
+--
+ALTER TABLE `lista_p_p`
+  ADD KEY `id_producto` (`id_producto`),
+  ADD KEY `id_pedido` (`id_pedido`);
+
+--
+-- Indices de la tabla `mayorista`
+--
+ALTER TABLE `mayorista`
+  ADD PRIMARY KEY (`CUIT`);
+
+--
+-- Indices de la tabla `minorista`
+--
+ALTER TABLE `minorista`
+  ADD PRIMARY KEY (`CUIT_CUIL`);
+
+--
+-- Indices de la tabla `pedido`
+--
+ALTER TABLE `pedido`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `pedido_fk_id_mayor` (`id_mayor`),
+  ADD KEY `pedido_fk_id_minor` (`id_minor`);
+
+--
+-- Indices de la tabla `producto`
+--
+ALTER TABLE `producto`
+  ADD PRIMARY KEY (`num`),
+  ADD KEY `producto_fk_1` (`id_mayor`);
+
+--
+-- Indices de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD KEY `usuario_fk_id_mayor` (`id_mayor`),
+  ADD KEY `usuario_fk_id_minor` (`id_minor`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `pedido`
+--
+ALTER TABLE `pedido`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `producto`
+--
+ALTER TABLE `producto`
+  MODIFY `num` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
@@ -132,22 +190,21 @@ ALTER TABLE `lista_p_p`
 -- Filtros para la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  ADD CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`),
-  ADD CONSTRAINT `pedido_ibfk_2` FOREIGN KEY (`id_minor`) REFERENCES `minorista` (`CUIT_CUIL`);
+  ADD CONSTRAINT `pedido_fk_id_mayor` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`),
+  ADD CONSTRAINT `pedido_fk_id_minor` FOREIGN KEY (`id_minor`) REFERENCES `minorista` (`CUIT_CUIL`);
 
 --
 -- Filtros para la tabla `producto`
 --
 ALTER TABLE `producto`
-  ADD CONSTRAINT `fk_mayor` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`),
-  ADD CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`);
+  ADD CONSTRAINT `producto_fk_1` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`);
 
 --
 -- Filtros para la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`),
-  ADD CONSTRAINT `usuario_ibfk_2` FOREIGN KEY (`id_minor`) REFERENCES `minorista` (`CUIT_CUIL`);
+  ADD CONSTRAINT `usuario_fk_id_mayor` FOREIGN KEY (`id_mayor`) REFERENCES `mayorista` (`CUIT`),
+  ADD CONSTRAINT `usuario_fk_id_minor` FOREIGN KEY (`id_minor`) REFERENCES `minorista` (`CUIT_CUIL`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
