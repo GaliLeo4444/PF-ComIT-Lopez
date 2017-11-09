@@ -9,6 +9,20 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     
+    <?php
+            $servername = "localhost";
+            $username = "root";
+            $password = "G@liLe04";
+            $dbname = "preventa";
+            $mayorista = "";
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            if ($conn->connect_error) {
+                die("Conexion BD fallida: " . $conn->connect_error);
+            }
+            $sql = "SELECT id_minor, fecha, estado FROM pedido WHERE id_mayor=" . $mayorista;
+            $result = $conn->query($sql);
+        ?>
+    
     <body>
         <header>
             <nav class="navbar navbar-inverse">
@@ -19,7 +33,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>                        
                         </button>
-                        <a class="navbar-brand" href="index.php">Home</a>
+                        <a class="navbar-brand" href="index.php">Inicio</a>
                     </div>
                     <div class="collapse navbar-collapse" id="myNavbar">
                         <ul class="nav navbar-nav">
@@ -42,58 +56,30 @@
         </header>
         <br>
         <br>
-        <h3>Pedidos pendientes:</h3>
-        <br>
-        
-        
-        <?php
-            $servername = "localhost";
-            $username = "root";
-            $password = "G@liLe04";
-            $dbname = "preventa";
-            $conn = new mysqli($servername, $username, $password, $dbname);
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            }
-
-            $sql = "SELECT id_minor, fecha, cantidad FROM pedido WHERE id_mayor=4444";
-            $result = $conn->query($sql);
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    echo "Comercio: " . $row["id_minor"]. " - Fecha: " . $row["fecha"]. "Cantidad: " . $row["cantidad"]. "<br>";
-                }
-            } else {
-                    echo "No se encontraron pedidos!!!!";
-            }
-        
-       /* <div class="container">
-  <h2>Table</h2>
-  <p>Using all the table classes on one table:</p>                                          
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Firstname</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>Anna</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Debbie</td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>John</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-        */
-        ?>
-        
+        <div class="container">
+            <h2>Pedidos</h2>
+            <p>Se encontraron <?php $result->num_rows; ?> pedidos:</p>            
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Comercio</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        while($row = $result->fetch_assoc()) {
+                             echo "<tr>";
+                            echo "<td>"; echo "$row[id_minor]"; echo "</td>";
+                            echo "<td>"; echo "$row[fecha]"; echo "</td>";
+                            echo "<td>"; echo "$row[estado]"; echo "</td>";
+                            echo "</tr>";
+                        }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+     
     </body>
 </html>

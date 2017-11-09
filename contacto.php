@@ -12,6 +12,37 @@
         </style>
     </head>
     
+    <?php
+            $nombre_error = $email_error = "";
+            $nombre = $email = $mensaje = $todoOK = "";
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                if (empty($_POST["name"])) {
+                    $nombre_error = "Su nombre es requerido!!!!";
+                } else {
+                        $nombre = test_input($_POST["name"]);
+                        if (empty($_POST["Email"])) {
+                            $email_error = " Un email es requerido!!!!";
+                        } else {
+                                    $email = test_input($_POST["Email"]);
+                                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                                        $email_error = "FORMATO INVALIDO!!!!";
+                                    } else {
+                                                $mensaje = test_input($_POST["mensaje"]);
+                                                $todoOK = "Su mensaje ha sido enviado correctamente";
+                                   }
+                        }
+                }
+            }
+            
+            function test_input($data) {
+                $data = trim($data);
+                $data = stripslashes($data);
+                $data = htmlspecialchars($data);
+                return $data;
+            }
+            
+        ?>
+    
     <body>
         <header>
             <nav class="navbar navbar-inverse">
@@ -31,8 +62,8 @@
                             <li><a href="contacto.php">Contacto</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href=""><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                            <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            <li><a href=""><span class="glyphicon glyphicon-user"></span> Registrarse</a></li>
+                            <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Entrar</a></li>
                         </ul>
                     </div>
                 </div>
@@ -40,47 +71,13 @@
         </header>
         <br>
         <br>
-
-        <?php
-            $nombre_error = $email_error = "";
-            $nombre = $email = "";
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                if (empty($_POST["name"])) {
-                    $name_error = "Su nombre es requerido!!!!";
-                } else {
-                    $nombre = test_input($_POST["nombre"]);
-                    if (!preg_match("/^[a-zA-Z ]*$/",$nombre)) {
-                        $nombre_error = "Solo letras y espacios en blanco son permitidos!!!!";
-                    }
-                }
-
-                if (empty($_POST["Email"])) {
-                    $email_error = " Un email es requerido!!!!";
-                } else {
-                    $email = test_input($_POST["Email"]);
-                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        $email_error = "Formato de email inválido";
-                    }
-                }
-            }
-            
-            function test_input($data) {
-                $data = trim($data);
-                $data = stripslashes($data);
-                $data = htmlspecialchars($data);
-                return $data;
-            }
-            
-
-        ?>
-
         <div class="container"><h3>Formulario de contacto</h3><br>
           <p class="error">* Campos requeridos.</p>
           <form class="form-horizontal" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             <div class="form-group">
                <label class="control-label col-sm-2" for="name">Nombre:</label>
                <div class="col-sm-10">
-                   <input id="Nombre" class="form-control" type="text" name="name">
+                   <input id="name" class="form-control" type="text" name="name">
                    <span class="error">* <?php echo $nombre_error;?></span>
                </div>
             </div>
@@ -92,14 +89,23 @@
                </div>
             </div>
             <div class="form-group">
-               <label class="control-label col-sm-2" for="Comentario">Comentario:</label>
+               <label class="control-label col-sm-2">Mensaje:</label>
                <div class="col-sm-10">
-                   <textarea class="form-control" id="Coment" name="coment"></textarea>
+                   <textarea class="form-control" id="mensaje" name="mensaje"></textarea>
                </div>
             </div>
-            <button type="button" class="btn btn-success">Enviar</button>
+            <button type="submit" class="btn btn-success">Enviar</button>
           </form>
         </div>
+        <br>
+        <br>
+        
+        <?php
+            echo $todoOK;
+            echo $nombre . "<br>";
+            echo $email . "<br>";
+            echo $mensaje . "<br>";
+        ?>
 
     </body>
 </html>

@@ -28,7 +28,7 @@
                             <li><a href="contacto.php">Contacto</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href=""><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                            <li><a href="registrarse.php"><span class="glyphicon glyphicon-user"></span> Registrarse</a></li>
                             <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Entrar</a></li>
                         </ul>
                     </div>
@@ -38,7 +38,7 @@
         <br>
         <br>
         <?php
-            echo 'Holaaaa'
+            
         ?>
         
     </body>
