@@ -69,35 +69,12 @@
                 $data = htmlspecialchars($data);
                 return $data;
             }
-            
-        ?>
+    ?>
     
     <body>
-        <header>
-            <nav class="navbar navbar-inverse">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>                        
-                        </button>
-                        <a class="navbar-brand" href="index.php">PoneleUnNombre</a>
-                    </div>
-                    <div class="collapse navbar-collapse" id="myNavbar">
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="index.php">Inicio</a></li>
-                            <li><a href="home-mayorista.php">Page 2</a></li>
-                            <li><a href="contacto.php">Contacto</a></li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a href=""><span class="glyphicon glyphicon-user"></span> Registrarse</a></li>
-                            <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Entrar</a></li>
-                        </ul>
-                    </div>
-                </div>
-             </nav>
-        </header>
+        <?php
+            include 'barra-nav.php';
+        ?>
         <br>
         <br>
         <div class="container"><h3>Ingrese sus datos....</h3><br>
@@ -150,14 +127,20 @@
                 if ($conn->connect_error) {
                    die("Conexion BD fallida: " . $conn->connect_error);
                 }
-                $pass = substr($name, 0, 7) . substr($CUIT, 2);
-                $sql = "INSERT INTO minorista (CUIT_CUIL, nombre, email, pass, direccion) VALUES ('" . 
-                            $CUIT . "', '" . $name . "', '" . $email . "', '" . $pass . "', '" . $dire . "')";
-                if ($conn->query($sql) === TRUE) {
-                     echo "Se ha registrado correctamente<br>";
-                     echo "Ingrese a su casilla de email para verificar su cuenta";
+                $sql = "SELECT CUIT_CUIL, nombre, pass FROM minorista WHERE CUIT_CUIL=" . $CUIT . ";";
+                $result = $conn->query($sql);
+                if ($row = $result->fetch_assoc()) {
+                   echo "El CUIT/CUIL ingresado ya ha sido registrado anteriormente";
                 } else {
-                        echo "Error: " . $sql . "<br>" . $conn->error;
+                            $pass = substr($name, 0, 7) . substr($CUIT, 2);
+                            $sql = "INSERT INTO minorista (CUIT_CUIL, nombre, email, pass, direccion) VALUES ('" . 
+                                     $CUIT . "', '" . $name . "', '" . $email . "', '" . $pass . "', '" . $dire . "')";
+                            if ($conn->query($sql) === TRUE) {
+                                echo "Se ha registrado correctamente<br>";
+                                echo "Ingrese a su casilla de email para verificar su cuenta";
+                            } else {
+                                    echo "Error: " . $sql . "<br>" . $conn->error;
+                            }
                 }
             }
         ?>

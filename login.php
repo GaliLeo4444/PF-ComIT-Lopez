@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Entrar</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width initial-scale=1.0">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    </head>
-    
-    <?php
+<?php
             $msg_error = "";
             $CUIT = $pass = "";
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -17,7 +6,7 @@
                     $msg_error = "Ingrese ambos campos";
                 } else {
                             $CUIT = test_input($_POST["CUIT"]);
-                            if ((!preg_match("/^[0-9]*$/", $CUIT)) && (strlen($CUIT) != 11)) {
+                            if ((!preg_match("/^[0-9]*$/", $CUIT)) or (strlen($CUIT) != 11)) {
                                 $msg_error = " INVALIDO!!!!";
                             } else {
                                         if (empty($_POST["pass"])) {
@@ -35,17 +24,16 @@
                                                    if ($_POST["comercio"] == "minorista") {
                                                       $sql = "SELECT CUIT_CUIL, nombre, pass FROM minorista WHERE CUIT_CUIL=" . $CUIT . " AND pass='" . $pass . "';";
                                                    } else {
-                                                                $sql = "SELECT CUIT, nombre, pass FROM mayorista WHERE CUIT_CUIL=" . $CUIT . " AND pass='" . $pass . "';";
+                                                                $sql = "SELECT CUIT, nombre, pass FROM mayorista WHERE CUIT=" . $CUIT . " AND pass='" . $pass . "';";
                                                    }
-                                                   $msg_error = $sql;
                                                    $result = $conn->query($sql);
                                                    if ($row = $result->fetch_assoc()) {
-                                                      $msg_error = "Bienvenido " . $row["nombre"];
-                                                      session_start();
+                                                      setcookie('user_CUIT', $CUIT, time() + 1200, "/");
+                                                      setcookie('user_name', $row["nombre"], time() + 1200, "/");
                                                       if ($_POST["comercio"] == "minorista") {
-                                                          echo "<script language=\"javascript\">window.location=\"home-minorista.php\"</script>";
+                                                          echo "<script language='javascript'>window.location='minorista/mi-cuenta.php'</script>";
                                                       } else {
-                                                                echo "<script language=\"javascript\">window.location=\"home-mayorista.php\"</script>";
+                                                                echo "<script language='javascript'>window.location='mayorista/mi-cuenta.php'</script>";
                                                       }
                                                    } else {
                                                             $msg_error = "CUIT/CUIL o contraseña incorrecto/s";
@@ -62,34 +50,23 @@
                 return $data;
             }
             
-        ?>
+?>
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Entrar</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
     
     <body>
-        <header>
-            <nav class="navbar navbar-inverse">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>                        
-                        </button>
-                        <a class="navbar-brand" href="index.php">PoneleUnNombre</a>
-                    </div>
-                    <div class="collapse navbar-collapse" id="myNavbar">
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="index.php">Inicio</a></li>
-                            <li><a href="home-mayorista.php">Page 2</a></li>
-                            <li><a href="contacto.php">Contacto</a></li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a href="registrarse.php"><span class="glyphicon glyphicon-user"></span> Registrarse</a></li>
-                            <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Entrar</a></li>
-                        </ul>
-                    </div>
-                </div>
-             </nav>
-        </header>
+        <?php
+            include 'barra-nav.php';
+        ?>
         <br>
         <br>
         
@@ -120,10 +97,6 @@
         </div>
         <br>
         <br>
-        
-        <?php
-            echo $msg_error;
-        ?>
         
     </body>
 </html>
