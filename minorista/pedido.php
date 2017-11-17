@@ -10,14 +10,14 @@
     if ($conn->connect_error) {
         die("Conexion BD fallida: " . $conn->connect_error);
     }
-    $sql = "SELECT nombre, direccion, descripcion FROM mayoristas;";
+    $sql = "SELECT id_mayor, fecha, estado FROM pedido WHERE id_minor=" . $_COOKIE["user_CUIT"] . ";";
     $result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Buscar Mayoristas - <?php echo $_COOKIE["user_name"] ?></title>
+        <title>Pedido - <?php echo $_COOKIE["user_name"] ?></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width initial-scale=1.0">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -29,16 +29,17 @@
         <?php
             include 'header-mino.php';
         ?>
+        <h3>Pedido para: <?php echo $pedido['mayorista'] ?></h3>
+        <br>
         <br>
         <div class="container">
-            <h2>Mayoristas</h2>
-            <p>Se encontraron <?php echo $result->num_rows; ?> mayoristas:</p>            
+            <p>Se agregaron <?php echo $pedido['cant']; ?> productos:</p>            
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>nombre</th>
-                        <th>direccion</th>
-                        <th>descripcion</th>
+                        <th>Comercio</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
