@@ -28,12 +28,14 @@
                                                    }
                                                    $result = $conn->query($sql);
                                                    if ($row = $result->fetch_assoc()) {
-                                                      setcookie('user_CUIT', $CUIT, time() + 1200, "/");
-                                                      setcookie('user_name', $row["nombre"], time() + 1200, "/");
+                                                      setcookie('user_CUIT', $CUIT, time() + 3600, "/");
+                                                      session_start();
+                                                      $_SESSION["nombre_com"] = $row["nombre"];
+                                                      //setcookie('user_name', $row["nombre"], time() + 1200, "/");
                                                       if ($_POST["comercio"] == "minorista") {
-                                                          echo "<script language='javascript'>window.location='minorista/mi-cuenta.php'</script>";
+                                                          header('Location: minorista/mi-cuenta.php');
                                                       } else {
-                                                                echo "<script language='javascript'>window.location='mayorista/mi-cuenta.php'</script>";
+                                                                header('Location: mayorista/mi-cuenta.php');
                                                       }
                                                    } else {
                                                             $msg_error = "CUIT/CUIL o contraseña incorrecto/s";

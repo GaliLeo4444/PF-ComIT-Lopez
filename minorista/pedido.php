@@ -1,6 +1,6 @@
 <?php
     if(!isset($_COOKIE["user_CUIT"])) {
-       echo "<script language='javascript'>window.location='http://127.0.0.1/Proyecto_ComIT/index.php'</script>";
+       header('Location: http://127.0.0.1/Proyecto_ComIT/index.php');
     }
     $servername = "localhost";
     $username = "root";

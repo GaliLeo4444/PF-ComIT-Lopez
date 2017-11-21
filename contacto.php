@@ -28,7 +28,7 @@
                                         $email_error = "FORMATO INVALIDO!!!!";
                                     } else {
                                                 $mensaje = test_input($_POST["mensaje"]);
-                                                $todoOK = "Su mensaje ha sido enviado correctamente";
+                                                echo "<script>window.alert('Su mensaje ha sido enviado correctamente')</script>";
                                    }
                         }
                 }
@@ -74,16 +74,7 @@
             </div>
             <button type="submit" class="btn btn-success">Enviar</button>
           </form>
-        </div>
-        <br>
-        <br>
-        
-        <?php
-            echo $todoOK;
-            echo $nombre . "<br>";
-            echo $email . "<br>";
-            echo $mensaje . "<br>";
-        ?>
+          <br>
 
     </body>
 </html>
