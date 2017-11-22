@@ -9,7 +9,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>                        
                         </button>
-                        <a class="navbar-brand" href="index.php">Inicio</a>
+                        <a class="navbar-brand" href="../index.php">Inicio</a>
                     </div>
                     <div class="collapse navbar-collapse" id="myNavbar">
                         <ul class="nav navbar-nav">
@@ -21,10 +21,10 @@
                                     <li><a href="mayoristas.php">Mayoristas</a></li>
                                 </ul>
                             </li>
-                            <li><a href="http://127.0.0.1/Proyecto_ComIT/contacto.php">Contacto</a></li>
+                            <li><a href="../contacto.php">Contacto</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="http://127.0.0.1/Proyecto_ComIT/logout.php"><span class="glyphicon glyphicon-log-out"></span> Salir</a></li>
+                            <li><a href="../logout.php"><span class="glyphicon glyphicon-log-out"></span> Salir</a></li>
                         </ul>
                     </div>
                 </div>

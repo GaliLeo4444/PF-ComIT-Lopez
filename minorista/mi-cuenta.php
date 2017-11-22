@@ -1,23 +1,28 @@
 <?php
-    if(!isset($_COOKIE["user_CUIT"])) {
-       header('Location: http://127.0.0.1/Proyecto_ComIT/index.php');
-    }
-    $servername = "localhost";
-    $username = "root";
-    $password = "G@liLe04";
-    $dbname = "preventa";
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) {
-        die("Conexion BD fallida: " . $conn->connect_error);
-    }
-    $sql = "SELECT id_mayor, fecha, estado FROM pedido WHERE id_minor=" . $_COOKIE["user_CUIT"] . ";";
-    $result = $conn->query($sql);
+        if(!isset($_COOKIE["user_CUIT"])) {
+            header('Location: ../index.php');
+        }
+        session_start();
+        $estado_p = "NO vistos";
+        $servername = "localhost";
+        $username = "root";
+        $password = "G@liLe04";
+        $dbname = "preventa";
+        $conn = new mysqli($servername, $username, $password, $dbname);
+        if ($conn->connect_error) {
+             die("Conexion BD fallida: " . $conn->connect_error);
+        }
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+           $estado_p = $_POST["sel_estado"]; 
+        }
+        $sql = "SELECT id_minor, fecha, estado FROM pedido WHERE id_mayor=" . $_COOKIE["user_CUIT"] . ";";
+        $result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Inicio Minorista - <?php echo $_COOKIE["user_name"] ?></title>
+        <title>Inicio Minorista - <?php echo $_SESSION["nombre_com"] ?></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width initial-scale=1.0">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -29,12 +34,39 @@
         <?php
             include 'header-mino.php';
         ?>
-        <h3>Bienvenido: <?php echo $_COOKIE["user_name"] ?></h3>
+        <h3>Bienvenido: <?php echo $_SESSION["nombre_com"] ?></h3>
+        <br>
+        <br>
+        <div class="container">
+            <h4>Cargar pedidos por</h4>
+            <form class="form-horizontal" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <label for="sel1">Seleccionar estado:</label>
+                        <select class="form-control" id="sel_estado" name="sel_estado">
+                            <option>NO vistos</option>
+                            <option>Vistos</option>
+                            <option>Aceptados</option>
+                            <option>Rechazados</option>
+                        </select>
+                    </div>
+                    <br>
+                    <label for="orden_fecha">Orden según fecha: </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="orden_fecha"> Ascendente
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="orden_fecha"> Descendente
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-success">Ver</button>
+            </form>
+        </div>
         <br>
         <br>
         <div class="container">
             <h2>Pedidos</h2>
-            <p>Se encontraron <?php echo $result->num_rows; ?> pedidos:</p>            
+            <p><?php echo "Se encontraron " . $result->num_rows . " pedidos " . $estado_p; ?></p>            
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -47,7 +79,7 @@
                     <?php
                         while($row = $result->fetch_assoc()) {
                              echo "<tr>";
-                            echo "<td>"; echo "$row[id_mayor]"; echo "</td>";
+                            echo "<td>"; echo "$row[id_minor]"; echo "</td>";
                             echo "<td>"; echo "$row[fecha]"; echo "</td>";
                             echo "<td>"; echo "$row[estado]"; echo "</td>";
                             echo "</tr>";
