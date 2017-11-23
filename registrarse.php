@@ -2,14 +2,20 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Registrarse</title>
+        <title>Preventista ONLINE - Registrarse</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width initial-scale=1.0">
+        <link rel="icon" href="images/Logo.gif" type="image/gif">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
         <style>
             .error {color: #FF0000;}
+            
+            body {
+                        background-color: #cccccc;
+                }
         </style>
     </head>
     
@@ -63,6 +69,32 @@
                 }
             }
             
+             if ($todoOK == 4) {
+                $servername = "localhost";
+                $username = "root";
+                $DBpass = "G@liLe04";
+                $DBname = "preventa";
+                $conn = new mysqli($servername, $username, $DBpass, $DBname);
+                if ($conn->connect_error) {
+                   die("Conexion BD fallida: " . $conn->connect_error);
+                }
+                $sql = "SELECT CUIT_CUIL, nombre, pass FROM minorista WHERE CUIT_CUIL=" . $CUIT . ";";
+                $result = $conn->query($sql);
+                if ($row = $result->fetch_assoc()) {
+                   echo "El CUIT/CUIL ingresado ya ha sido registrado anteriormente";
+                } else {
+                            $pass = substr($name, 0, 7) . substr($CUIT, 2);
+                            $sql = "INSERT INTO minorista (CUIT_CUIL, nombre, email, pass, direccion) VALUES ('" . 
+                                     $CUIT . "', '" . $name . "', '" . $email . "', '" . $pass . "', '" . $dire . "')";
+                            if ($conn->query($sql) === TRUE) {
+                                echo "Se ha registrado correctamente<br>";
+                                echo "Ingrese a su casilla de email para verificar su cuenta";
+                            } else {
+                                    echo "Error: " . $sql . "<br>" . $conn->error;
+                            }
+                }
+            }
+            
             function test_input($data) {
                 $data = trim($data);
                 $data = stripslashes($data);
@@ -110,39 +142,9 @@
             <button type="submit" class="btn btn-success">Registrarse</button>
           </form>
         </div>
-        <br>
-        <br>
         
         <?php
-            echo $CUIT . "<br>";
-            echo $name . "<br>";
-            echo $email . "<br>";
-            echo $dire . "<br>";
-            if ($todoOK == 4) {
-                $servername = "localhost";
-                $username = "root";
-                $DBpass = "G@liLe04";
-                $DBname = "preventa";
-                $conn = new mysqli($servername, $username, $DBpass, $DBname);
-                if ($conn->connect_error) {
-                   die("Conexion BD fallida: " . $conn->connect_error);
-                }
-                $sql = "SELECT CUIT_CUIL, nombre, pass FROM minorista WHERE CUIT_CUIL=" . $CUIT . ";";
-                $result = $conn->query($sql);
-                if ($row = $result->fetch_assoc()) {
-                   echo "El CUIT/CUIL ingresado ya ha sido registrado anteriormente";
-                } else {
-                            $pass = substr($name, 0, 7) . substr($CUIT, 2);
-                            $sql = "INSERT INTO minorista (CUIT_CUIL, nombre, email, pass, direccion) VALUES ('" . 
-                                     $CUIT . "', '" . $name . "', '" . $email . "', '" . $pass . "', '" . $dire . "')";
-                            if ($conn->query($sql) === TRUE) {
-                                echo "Se ha registrado correctamente<br>";
-                                echo "Ingrese a su casilla de email para verificar su cuenta";
-                            } else {
-                                    echo "Error: " . $sql . "<br>" . $conn->error;
-                            }
-                }
-            }
+            include 'pie.php';
         ?>
         
     </body>

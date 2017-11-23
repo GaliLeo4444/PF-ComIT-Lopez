@@ -3,7 +3,6 @@
             header('Location: ../index.php');
         }
         session_start();
-        $mayorista = $_GET["M"];
         $servername = "localhost";
         $username = "root";
         $password = "G@liLe04";
@@ -12,20 +11,22 @@
         if ($conn->connect_error) {
              die("Conexion BD fallida: " . $conn->connect_error);
         }
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {         //Se ordenan los productos
             $seleccion = $_POST["seleccion"];
             if ($seleccion == "Código"){
-                $sql = "SELECT num, codigo, precio_unit, min_unit FROM producto WHERE id_mayor=" . $_COOKIE["user_CUIT"] . " ORDER BY codigo";
+                $sql = "SELECT num, codigo, precio_unit, min_unit FROM producto WHERE id_mayor=" . $_SESSION["mayo_CUIT"] . " ORDER BY codigo";
                 $seleccionado = 1;
             }
             else {
-                 $sql = "SELECT num, codigo, precio_unit, min_unit FROM producto WHERE id_mayor=" . $_COOKIE["user_CUIT"] . " ORDER BY precio_unit";
+                 $sql = "SELECT num, codigo, precio_unit, min_unit FROM producto WHERE id_mayor=" . $_SESSION["mayo_CUIT"] . " ORDER BY precio_unit";
                  $seleccionado = 2;
             }
         }
-        else {
-             $sql = "SELECT num, codigo, precio_unit, min_unit FROM producto WHERE id_mayor=" . $mayorista;
-             $seleccionado = 0;
+        else {                                                              //Se ingresa a la pag. por primera vez
+                $_SESSION["mayo_CUIT"] = $_REQUEST["c"];
+                $_SESSION["mayo_nombre"] = $_REQUEST["n"];
+                $sql = "SELECT num, codigo, precio_unit, min_unit FROM producto WHERE id_mayor=" . $_SESSION["mayo_CUIT"];
+                $seleccionado = 0;
         }
         $result = $conn->query($sql);
 ?>
@@ -33,15 +34,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Lista de Productos - <?php echo $_SESSION["nombre_com"] ?></title>
+        <title>Preventista ONLINE - Lista de Productos - <?php echo $_SESSION["mayo_nombre"] ?></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width initial-scale=1.0">
+        <link rel="icon" href="../images/Logo.gif" type="image/gif">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <style>
              #filtro {
-                background-image: url('/css/searchicon.png');
+                background-image: url('/images/searchicon.png');
                 background-position: 10px 10px;
                 background-repeat: no-repeat;
                 width: 100%;
@@ -54,8 +56,15 @@
              /* Full-width input fields */
             input[type=text] {
                 width: 40%;
-                padding: 10px 10px;
-                margin: 8px 0;
+                padding: 5px 5px;;
+                display: inline-block;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+            }
+            
+            textarea {
+                width: 40%;
+                padding: 5px 5px;;
                 display: inline-block;
                 border: 1px solid #ccc;
                 box-sizing: border-box;
@@ -69,7 +78,8 @@
                 margin: 8px 0;
                 border: none;
                 cursor: pointer;
-                width: auto;
+                width: 50%;
+                position: center;
             }
 
             button:hover {
@@ -79,7 +89,7 @@
             /* Center the image and position the close button */
             .imgcontainer {
                 text-align: center;
-                margin: 24px 0 12px 0;
+                margin: 12px 0 12px 0;
                 position: relative;
             }
 
@@ -100,7 +110,7 @@
                 overflow: auto; /* Enable scroll if needed */
                 background-color: rgb(0,0,0); /* Fallback color */
                 background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-                padding-top: 60px;
+                padding-top: 20px;
             }
 
             /* Modal Content/Box */
@@ -108,7 +118,9 @@
                 background-color: #fefefe;
                 margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
                 border: 1px solid #888;
-                width: 50%; /* Could be more or less, depending on screen size */
+                width: 40%; /* Could be more or less, depending on screen size */
+                text-align:center;
+                font-size: 80%;
             }
 
             /* The Close Button (x) */
@@ -117,7 +129,7 @@
                 right: 25px;
                 top: 0;
                 color: #000;
-                font-size: 35px;
+                font-size: 30px;
                 font-weight: bold;
             }
 
@@ -149,9 +161,6 @@
                     display: block;
                     float: none;
                 }
-                .cancelbtn {
-                    width: 100%;
-                }
             }
 
         </style>
@@ -161,7 +170,7 @@
         <?php
             include 'header-mino.php';
         ?>
-        <h3>Productos cargados en la base de datos:</h3>
+        <h3>Productos disponibles de: <?php echo $_SESSION["mayo_nombre"] ?></h3>
         <br>
         <div class="container">
             <h4>Ordenar por:</h4>
@@ -193,12 +202,11 @@
                 </thead>
                 <tbody>
                     <?php
-                        echo "<script>document.getElementById('seleccion').selectedIndex = '" . $seleccionado . "';</script>";
                         while($row = $result->fetch_assoc()) {
-                            echo "<tr id='" . "$row[num]" . "' onclick='cualEs(id)'>";
-                            echo "<td>"; echo "$row[codigo]"; echo "</td>";
-                            echo "<td>"; echo "$row[precio_unit]"; echo "</td>";
-                            echo "<td>"; echo "$row[min_unit]"; echo "</td>";
+                            echo "<tr id='" . "$row[num]" . "' onclick='agregarURL(id, 1)'>";
+                            echo "<td>" . "$row[codigo]" . "</td>";
+                            echo "<td>" . "$" . "$row[precio_unit]" . "</td>";
+                            echo "<td>" . "$row[min_unit]" . "</td>";
                             echo "</tr>";
                         }
                     ?>
@@ -206,46 +214,81 @@
             </table>
         </div>
         <br>
-        
-        <button class="buttonModal" onclick="document.getElementById('ventanaModal').style.display='block'">Modal</button>
 
         <div id="ventanaModal" class="modal">
             <div class="modal-content animate">
                 <div class="imgcontainer">
                     <span onclick="document.getElementById('ventanaModal').style.display='none'" class="close" title="Close Modal">&times;</span>
-                    <img src="images-productos/producto_muestra.png" alt="Imagen Producto">
+                    <img src="../mayorista/images-productos/producto_muestra.png" alt="Imagen Producto">
                 </div>
-                <div class="container">
-                    <label><b>Codigo</b></label>
-                    <input type="text" name="codigo">
-                    <br>
-                    <label><b>Precio Unitario</b></label>
-                    <input type="text" name="precio">
-                    <br>
-                    <label><b>Mínima cantidad</b></label>
-                    <input type="text" name="cant">
-                    <br>
-                    <label><b>Descripción</b></label>
-                    <textarea name="desc"></textarea>
-                    <br>
+                <div>
+                    <label><b>Codigo</b></label><br>
+                    <input type="text" id="codigo">
+                    <br><br>
+                    <label><b>Precio Unitario</b></label><br>
+                    <input type="text" id="precio">
+                    <br><br>
+                    <label><b>Mínima cantidad</b></label><br>
+                    <input type="text" id="cant">
+                    <br><br>
+                    <label><b>Descripción</b></label><br>
+                    <textarea id="desc"></textarea>
+                    <br><br>
                 </div>
                 <div style="background-color:#f1f1f1">
-                    <button type="button" onclick="document.getElementById('ventanaModal').style.display='none'" class="buttonModal" style=background-color:#f44336>Borrar</button>
-                    <button type="button" class="buttonModal">Actualizar</button>
+                    <button type="button" class="buttonModal" onclick="agregarURL('cualquiera', 2)">Agregar al Pedido</button>
                 </div>
             </div>
         </div>
 
+        <?php
+            echo "<script>document.getElementById('seleccion').selectedIndex = '" . $seleccionado . "';</script>";
+            include '../pie.php';
+        ?>
 
         <script>
-            var xmlhttp, resp, txt = "";
-            xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    resp = JSON.parse(this.responseText);
-                    window.alert(resp[0].descripcion);
+            var id_producto;        //Mantiene el ID del último producto seleccionado
+
+            function agregarURL(id, quien_llamo) {
+                var URL;
+                if (quien_llamo == 1) {         //MostrarModal
+                    id_producto = id;
+                    URL = "../mayorista/datos-producto.php?p=" + id;
+                    selecLlamada(URL, mostrarModal);
                 }
-            };
+                else {
+                        URL = "datos-pedido.php?id=" + id_producto + "&cod=" + document.getElementById('codigo').value  + "&cant=1";
+                        selecLlamada(URL, manejarPedido);
+                }
+            }
+            
+            function selecLlamada(url, cFunction) {
+                var xhttp;
+                xhttp=new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        cFunction(this.responseText);
+                    }
+                };
+                xhttp.open("GET", url, true);
+                xhttp.send();
+            }
+   
+            function mostrarModal(resp) {
+                var A;
+                A = JSON.parse(resp);
+                document.getElementById('codigo').value = A[0].codigo;
+                document.getElementById('precio').value = "$" + A[0].precio_unit;
+                document.getElementById('cant').value = A[0].min_unit;
+                document.getElementById('desc').value = A[0].descripcion;
+                document.getElementById('ventanaModal').style.display = 'block';
+            }
+            
+            function manejarPedido(resp) {
+                    window.alert("El producto ha sido agregado correctamente");
+                    document.getElementById('ventanaModal').style.display = 'none';
+            }
+                
 
             function funcionFiltro() {
                 var input, filter, table, tr, td, i;
@@ -264,13 +307,8 @@
                     }       
                 }
             }
-            
-            function cualEs(id) {
-                xmlhttp.open("GET", "datos-producto.php?x=" + id, true);
-                xmlhttp.send();
-            }
 
-            var modal = document.getElementById('id01');
+            var modal = document.getElementById('ventanaModal');
             window.onclick = function(event) {      //Para cerrarla si se hace click fuera de la ventana modal
                 if (event.target == modal) {
                     modal.style.display = "none";

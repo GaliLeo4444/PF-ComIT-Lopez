@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 16-11-2017 a las 19:12:55
+-- Tiempo de generación: 23-11-2017 a las 20:12:04
 -- Versión del servidor: 5.7.19
 -- Versión de PHP: 5.6.31
 
@@ -65,7 +65,7 @@ CREATE TABLE `mayorista` (
 --
 
 INSERT INTO `mayorista` (`CUIT`, `nombre`, `email`, `pass`, `direccion`, `descripcion`) VALUES
-(20322093463, 'Mayorista GaliLeo S.A.', 'pipipipi@cualquiera.com', '1234', 'cualquiera 4444', NULL);
+(20322093463, 'Mayorista Comunidad IT', 'pipipipi@cualquiera.com', '1234', 'Argentina', NULL);
 
 -- --------------------------------------------------------
 
@@ -86,7 +86,7 @@ CREATE TABLE `minorista` (
 --
 
 INSERT INTO `minorista` (`CUIT_CUIL`, `nombre`, `email`, `pass`, `direccion`) VALUES
-(20322093463, 'Leandro J. Lopez - S.A.', 'galileo4444@gmail.com', 'Leandr322093463', 'B. Blanca');
+(20322093463, 'Supermercado Maka', 'maka@gmail.com', '1234', 'Bahia Blanca');
 
 -- --------------------------------------------------------
 
@@ -103,6 +103,15 @@ CREATE TABLE `pedido` (
   `estado` enum('presentado','visto','aceptado','rechazado') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'presentado',
   `comentario` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `pedido`
+--
+
+INSERT INTO `pedido` (`id`, `id_mayor`, `id_minor`, `cantidad`, `fecha`, `estado`, `comentario`) VALUES
+(1, 20322093463, 20322093463, 1, '2017-11-23 18:14:59', 'presentado', 'De Prueba'),
+(2, 20322093463, 20322093463, 4, '2017-11-23 18:58:00', 'presentado', NULL),
+(3, 20322093463, 20322093463, 2, '2017-11-23 20:03:16', 'presentado', NULL);
 
 -- --------------------------------------------------------
 
@@ -129,8 +138,10 @@ INSERT INTO `producto` (`num`, `id_mayor`, `codigo`, `precio_unit`, `min_unit`, 
 (1, 20322093463, 'Producto0000', '44.44', 1, 0, 'paquete....', NULL),
 (2, 20322093463, 'Producto2222', '22.22', 1, 0, 'paquete....', NULL),
 (4, 20322093463, 'Producto1111', '11.00', 1, 0, 'paquete....', NULL),
-(5, 20322093463, '', '10.00', 10, 0, 'Cualquiera', NULL),
-(6, 20322093463, 'ProductoPrueba', '12.34', 40, 0, 'Paquetitos', NULL);
+(7, 20322093463, 'Producto-1234', '44.44', 1, -1, '', NULL),
+(8, 20322093463, 'OtroProducto', '1.00', 1, 400, '', NULL),
+(10, 20322093463, 'Cajaxxxx', '123.45', 1, -1, 'Se vende por cajas', NULL),
+(11, 20322093463, 'Articulo1234', '20.17', 40, 500, 'Por cantidad', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -185,13 +196,13 @@ ALTER TABLE `producto`
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `num` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `num` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Restricciones para tablas volcadas

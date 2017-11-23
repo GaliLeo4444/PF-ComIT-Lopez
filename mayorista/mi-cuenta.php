@@ -22,9 +22,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Inicio Mayorista - <?php echo $_SESSION["nombre_com"] ?></title>
+        <title>Preventista ONLINE - Inicio Mi Cuenta - <?php echo $_SESSION["nombre_com"] ?></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width initial-scale=1.0">
+        <link rel="icon" href="../images/Logo.gif" type="image/gif">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -66,13 +67,18 @@
         <br>
         <div class="container">
             <h2>Pedidos</h2>
-            <p><?php echo "Se encontraron " . $result->num_rows . " pedidos " . $estado_p; ?></p>            
+            <p><?php echo "Se encontraron " . $result->num_rows . " pedidos " . $estado_p; ?></p>
+            <div>
+                    <button type="button" class="btn btn-success">Aceptar</button>
+                    <button type="button" class="btn btn-success" style="background-color:red">Rechazar</button>
+           </div>
             <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>Comercio</th>
                         <th>Fecha</th>
                         <th>Estado</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,12 +88,17 @@
                             echo "<td>"; echo "$row[id_minor]"; echo "</td>";
                             echo "<td>"; echo "$row[fecha]"; echo "</td>";
                             echo "<td>"; echo "$row[estado]"; echo "</td>";
+                            echo "<td><input id=stock_check type='checkbox' name='check_estado'></td>";
                             echo "</tr>";
                         }
                     ?>
                 </tbody>
             </table>
         </div>
+        
+        <?php
+            include '../pie.php';
+        ?>
      
     </body>
 </html>

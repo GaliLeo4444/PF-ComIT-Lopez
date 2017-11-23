@@ -1,6 +1,6 @@
 <?php
         header("Content-Type: application/json; charset=UTF-8");
-        $num_producto = $_GET["x"];
+        $num_producto = $_GET["p"];
 
         $servername = "localhost";
         $username = "root";
@@ -10,7 +10,7 @@
         if ($conn->connect_error) {
              die("Conexion BD fallida: " . $conn->connect_error);
         }
-        $sql = "SELECT descripcion, dir_imagen FROM producto WHERE num=" . $num_producto;
+        $sql = "SELECT codigo, precio_unit, min_unit, stock, descripcion FROM producto WHERE num=" . $num_producto;
         $result = $conn->query($sql);
         
         $respuesta = array();

@@ -33,6 +33,10 @@
                                                       $_SESSION["nombre_com"] = $row["nombre"];
                                                       //setcookie('user_name', $row["nombre"], time() + 1200, "/");
                                                       if ($_POST["comercio"] == "minorista") {
+                                                          $_SESSION["cant_p_p"] = 0;                        //Cantidad de productos en el pedido actual
+                                                          $_SESSION["pedido"] [0]['id'] = 0;
+                                                          $_SESSION["pedido"] [0]['cod'] = 0;
+                                                          $_SESSION["pedido"] [0]['cant'] = 0;
                                                           header('Location: minorista/mi-cuenta.php');
                                                       } else {
                                                                 header('Location: mayorista/mi-cuenta.php');
@@ -57,12 +61,19 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Entrar</title>
         <meta charset="UTF-8">
+        <title>Preventista ONLINE - Entrar</title>
         <meta name="viewport" content="width=device-width initial-scale=1.0">
+        <link rel="icon" href="images/Logo.gif" type="image/gif">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
+        <style> 
+                body {
+                        background-color: #cccccc;
+                }
+        </style>
     </head>
     
     <body>
@@ -97,8 +108,10 @@
             <button type="submit" class="btn btn-success">Entrar</button>
           </form>
         </div>
-        <br>
-        <br>
+        
+        <?php
+            include 'pie.php';
+        ?>
         
     </body>
 </html>
